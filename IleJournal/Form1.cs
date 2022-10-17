@@ -13,6 +13,12 @@ namespace IleJournal
             DateTime time = new DateTime();
             time = DateTime.Now;
             int week = Weekmethod(time);
+            string date = DateTime.Today.ToString();
+
+            //Koosta teksti yhdeksi stringiksi
+
+            string Heading= 
+
             richTextBox1.Text = "Journal";
             richTextBox1.Text = week.ToString();
         }
