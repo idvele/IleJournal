@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Net.Security;
+using System.Windows.Forms;
 
 namespace IleJournal
 {
@@ -9,28 +10,29 @@ namespace IleJournal
         {
             InitializeComponent();
 
-            //Insert timestamp to note
-            DateTime time = new DateTime();
-            time = DateTime.Now;
-            int week = Weekmethod(time);
-            string date = DateTime.Today.ToString();
-
-            //Koosta teksti yhdeksi stringiksi
-
-            string Heading= 
-
-            richTextBox1.Text = "Journal";
-            richTextBox1.Text = week.ToString();
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            //Insert timestamp to note
+            DateTime time = new DateTime();
+            time = DateTime.Now;
+            string week = Weekmethod(time).ToString();
+            string date = DateTime.Today.ToShortDateString();
+            string weekday = DateTime.Today.DayOfWeek.ToString();
+
+            //Koosta teksti yhdeksi stringiksi
+
+            string Heading= "Week number: "+week + "\n \n" + date +" " + weekday+"\n" +" ";
+
+            richTextBox1.Text = Heading;
+            richTextBox1.Select(richTextBox1.Text.Length - 1, 0);
 
         }
 
         private void richTextBox1_TextChanged(object sender, EventArgs e)
         {
-         
+           
         }
 
         private void button1_Click(object sender, EventArgs e)
