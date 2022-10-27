@@ -1,4 +1,5 @@
 using Microsoft.Data.SqlClient;
+using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Net.Security;
@@ -8,33 +9,63 @@ namespace IleJournal
 {
     public partial class Journal : Form
     {
-        public Journal()
-        {
-            InitializeComponent();
-
-        }
-        //AddDays(1). tester add to date
-        private void Form1_Load(object sender, EventArgs e)
-        { 
+        //p‰iv‰m‰‰r‰ m‰‰ritet‰n k‰ynnistyksen yhteydess‰
             //Get dates
             string week = JournalHelpers.Weekmethod(DateTime.Now).ToString();
             //string date = DateTime.Today.ToShortDateString();
             string date = DateTime.Today.ToShortDateString();
             string weekday = DateTime.Today.DayOfWeek.ToString();
 
+        
+        public Journal()
+        {
+            InitializeComponent();
+
+        }
+        //Mit‰ tapahtuu aloituksessa
+        private void Form1_Load(object sender, EventArgs e)
+        { 
             //get old data if the weekly file exists
             if (File.Exists(@"C:\Users\ilari\source\repos\IleJournal\Entrys\" + week + ".rtf"))
                 richTextBox1.LoadFile(@"C:\Users\ilari\source\repos\IleJournal\Entrys\" + week + ".rtf");
 
             //write timestamp and concatinate if stamp doesn¥t exist
-            string stamp= TimeStamp( week, date, weekday);
+            string stamp= TimeStampMethod( week, date, weekday);
             richTextBox1.AppendText(stamp);
 
             //Move cursor to end
             richTextBox1.Select(richTextBox1.Text.Length - 1, 0);
+
+            //J‰rjest‰ combobox
+
+            using (SqlConnection conn = DatabaseConnect())
+            {
+                string query = "SELECT week from testitable ORDER BY 'week'";
+                SqlDataAdapter da = new SqlDataAdapter(query, conn);
+                
+                DataSet ds = new DataSet();
+                da.Fill(ds, "week");
+                WeekBox.DisplayMember = "week";
+                WeekBox.DataSource = ds.Tables["week"];
+
+                try
+                {
+                    WeekBox.SelectedIndex = WeekBox.FindString(week);
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+            }
+
+            //    WeekBox.Items.Add("yksi");
+            //WeekBox.Items.Add("kaksi");
+
         }
 
-        private string TimeStamp(string week, string date, string weekday)
+        //Metodi joka tekee timestampin sen mukaan lˆytyykˆ viikolle omaa tiedostoa hakemistosta
+        private string TimeStampMethod(string week, string date, string weekday)
         {
                     //Koosta teksti yhdeksi stringiksi
             //Heading m‰‰r‰ytyy sen mukaan, onko tekstitedostoa olemassa
@@ -52,28 +83,133 @@ namespace IleJournal
                 return InitialHeading;
 
         }
-
+        //null
         private void richTextBox1_TextChanged(object sender, EventArgs e)
         {
 
         }
-
+        //Tallennusnappula
         private void button1_Click(object sender, EventArgs e)
         {
+            //make a saveable object
+            SaveObject save = new SaveObject();
+            //tallennusviikoksi m‰‰ritet‰‰n comboboxin valittu viikko JOS siell‰ on viikko valittuna
+            if (WeekBox.Text!= "")
+            {
+                save.Week = WeekBox.Text;
+            }
+            else
+            {
+            save.Week = week;
+
+            }
+            save.Journal_text = richTextBox1.Text.ToString();
+
+            //text save-------------------------------
 
             //make a path for weeknumber
-            string fileName = JournalHelpers.Weekmethod(DateTime.Now).ToString();
+            string fileName = save.Week;
             string fullPath = @"C:\Users\ilari\source\repos\IleJournal\Entrys\" + fileName +".rtf";
+
 
             //save for current weeknumber
             richTextBox1.SaveFile(fullPath, RichTextBoxStreamType.RichText);
 
-            string message = "Saved!";
-            MessageBox.Show(message);
+            //Sql save------------------------------
+
+
+            // Save to Sql
+            SqlConnection cnn = DatabaseConnect();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+
+
+            //if-logiikka, jos viikkomerkint‰ on->p‰ivitys jos ei->uusi input
+            string CheckSql = "Select * from testitable where Week= '"+save.Week+"'";
+            SqlCommand CheckCommand = new SqlCommand(CheckSql, cnn);
+            SqlDataReader r = CheckCommand.ExecuteReader();
+            string value="a";
+            while (r.Read())
+            {
+                value = r.GetString(0);
+            }
+            r.Close();
+            CheckCommand.Dispose();
+
+            string message = "null";
+            if (value=="a")
+                //luodaan uusi kirjaus
+            {
+            
+            string InsertSql = ("Insert into dbo.testitable (Week,Journal_text) values('" + save.Week + "','" + save.Journal_text + "')");
+            
+            //SqlCommand command = new SqlCommand(InsertSql, cnn);
+
+            adapter.InsertCommand = new SqlCommand(InsertSql, cnn);
+            adapter.InsertCommand.ExecuteNonQuery();
+
+            //command.Dispose();
+
+
+             message = "Saved!";
+            }
+            else
+            {
+                //p‰ivitet‰‰n olemassaoleva kirjaus
+                SqlCommand command = new SqlCommand("UPDATE testitable SET Journal_text = '"+save.Journal_text+"' WHERE Week='"+save.Week+"';", cnn);
+                adapter.UpdateCommand = command;
+                adapter.UpdateCommand.ExecuteNonQuery();
+
+              message = "Save updated";
+            }
+            
+            cnn.Close();
+            MessageBox.Show(message);   
         }
 
+        //MUUTA SQL HAUT PARAMETRISIKSI KS. https://csharp-station.com/Tutorial/AdoDotNet/Lesson06
+
+        //Metodi datan hakuun sql:st‰
+        static string DataGet(string week)
+            {
+
+            SqlConnection cnn = DatabaseConnect();
+            //tehd‰‰n haku databasesta ja printataan se richtextboxiin
+            
+            string sql = "Select Journal_text from testitable where Week =@SearchWeek;";
+            SqlCommand command = new SqlCommand(sql, cnn);
+            SqlParameter param = new SqlParameter();
+            param.ParameterName = "@SearchWeek";
+            param.Value = week;
+            command.Parameters.Add(param);
+            
+            
+            SqlDataReader reader = command.ExecuteReader();
+            String Output= "";
+            
+            while (reader.Read())
+            {
+                Output += reader.GetValue(0);
+            }
+
+
+            reader.Close();
+            command.Dispose();
+            cnn.Close();
+                return Output;
+            }
+        
+        //metodi comboboxin osoittaman viikon hakuun
         private void button1_Click_1(object sender, EventArgs e)
         {
+            
+            richTextBox1.Text=DataGet(WeekBox.Text);
+
+        }
+
+        //Databaseen yhdist‰mismetodi, palauttaa connectionin
+            static SqlConnection DatabaseConnect()
+            {
+
             string connectionString;
             SqlConnection cnn;
 
@@ -82,21 +218,14 @@ namespace IleJournal
             cnn= new SqlConnection(connectionString);
 
             cnn.Open();
-            //tehd‰‰n haku databasesta ja printataan se richtextboxiin
-            
-            string sql = "Select Journal_text from testitable";
-            SqlCommand command = new SqlCommand(sql, cnn);
-            SqlDataReader reader = command.ExecuteReader();
-            String Output = "";
 
-            while (reader.Read())
-            {
-                Output = Output + reader.GetValue(0);
+                return cnn;
             }
-
-
-            richTextBox1.Text=Output;
-            cnn.Close();
+        //comboboxin sis‰llˆn vaihto
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //string pop = "changed";
+            //MessageBox.Show(pop);
         }
     }
 }//Tsekkaa t‰‰ https://www.guru99.com/c-sharp-access-database.html

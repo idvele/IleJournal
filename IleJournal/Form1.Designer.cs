@@ -30,7 +30,7 @@
         {
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.Save = new System.Windows.Forms.Button();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.WeekBox = new System.Windows.Forms.ComboBox();
             this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
@@ -53,13 +53,14 @@
             this.Save.UseVisualStyleBackColor = true;
             this.Save.Click += new System.EventHandler(this.button1_Click);
             // 
-            // comboBox1
+            // WeekBox
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(313, 398);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(121, 23);
-            this.comboBox1.TabIndex = 2;
+            this.WeekBox.FormattingEnabled = true;
+            this.WeekBox.Location = new System.Drawing.Point(125, 398);
+            this.WeekBox.Name = "WeekBox";
+            this.WeekBox.Size = new System.Drawing.Size(121, 23);
+            this.WeekBox.TabIndex = 2;
+            this.WeekBox.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
             // button1
             // 
@@ -67,7 +68,7 @@
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 3;
-            this.button1.Text = "Connect db";
+            this.button1.Text = "GET WEEK";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click_1);
             // 
@@ -78,7 +79,7 @@
             this.BackColor = System.Drawing.SystemColors.Info;
             this.ClientSize = new System.Drawing.Size(569, 450);
             this.Controls.Add(this.button1);
-            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.WeekBox);
             this.Controls.Add(this.Save);
             this.Controls.Add(this.richTextBox1);
             this.Name = "Journal";
@@ -92,7 +93,7 @@
 
         private RichTextBox richTextBox1;
         private Button Save;
-        private ComboBox comboBox1;
+        private ComboBox WeekBox;
         private Button button1;
     }
 }
