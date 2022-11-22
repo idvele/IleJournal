@@ -12,7 +12,6 @@ namespace IleJournal
         //päivämäärä määritetän käynnistyksen yhteydessä
             //Get dates
             string week = JournalHelpers.Weekmethod(DateTime.Now).ToString();
-            //string date = DateTime.Today.ToShortDateString();
             string date = DateTime.Today.ToShortDateString();
             string weekday = DateTime.Today.DayOfWeek.ToString();
 
@@ -24,13 +23,13 @@ namespace IleJournal
         }
         //Mitä tapahtuu aloituksessa
         private void Form1_Load(object sender, EventArgs e)
-        { 
+        {
             //get old data if the weekly file exists
             if (File.Exists(@"C:\Users\ilari\source\repos\IleJournal\Entrys\" + week + ".rtf"))
                 richTextBox1.LoadFile(@"C:\Users\ilari\source\repos\IleJournal\Entrys\" + week + ".rtf");
 
             //write timestamp and concatinate if stamp doesn´t exist
-            string stamp= TimeStampMethod( week, date, weekday);
+            string stamp = TimeStampMethod(week, date, weekday);
             richTextBox1.AppendText(stamp);
 
             //Move cursor to end
@@ -38,51 +37,13 @@ namespace IleJournal
 
             //Järjestä combobox
 
-            using (SqlConnection conn = DatabaseConnect())
-            {
-                string query = "SELECT week from testitable ORDER BY 'week'";
-                SqlDataAdapter da = new SqlDataAdapter(query, conn);
-                
-                DataSet ds = new DataSet();
-                da.Fill(ds, "week");
-                WeekBox.DisplayMember = "week";
-                WeekBox.DataSource = ds.Tables["week"];
-
-                try
-                {
-                    WeekBox.SelectedIndex = WeekBox.FindString(week);
-                }
-                catch (Exception)
-                {
-
-                    throw;
-                }
-            }
+            OrganizeComboBox();
 
             //    WeekBox.Items.Add("yksi");
             //WeekBox.Items.Add("kaksi");
 
         }
 
-        //Metodi joka tekee timestampin sen mukaan löytyykö viikolle omaa tiedostoa hakemistosta
-        private string TimeStampMethod(string week, string date, string weekday)
-        {
-                    //Koosta teksti yhdeksi stringiksi
-            //Heading määräytyy sen mukaan, onko tekstitedostoa olemassa
-            string InitialHeading = "Week number: " + week + "\n \n" + date + " " + weekday + "\n\n" + " ";
-            string DailyHeading = "\n------------------------\n" +date + " " + weekday + "\n\n" + " ";
-
-            if (File.Exists(@"C:\Users\ilari\source\repos\IleJournal\Entrys\" + week + ".rtf"))
-            {
-                if (richTextBox1.Find(date) == -1)
-                    return DailyHeading;
-                else
-                    return " ";
-            }
-            else
-                return InitialHeading;
-
-        }
         //null
         private void richTextBox1_TextChanged(object sender, EventArgs e)
         {
@@ -122,7 +83,7 @@ namespace IleJournal
             SqlConnection cnn = DatabaseConnect();
             SqlDataAdapter adapter = new SqlDataAdapter();
 
-
+            //Parametriset SQL-komennot
             //if-logiikka, jos viikkomerkintä on->päivitys jos ei->uusi input
             string CheckSql = "Select * from testitable where Week= '"+save.Week+"'";
             SqlCommand CheckCommand = new SqlCommand(CheckSql, cnn);
@@ -165,9 +126,60 @@ namespace IleJournal
             cnn.Close();
             MessageBox.Show(message);   
         }
+       
+        //metodi comboboxin osoittaman viikon hakuun
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            
+            richTextBox1.Text=DataGet(WeekBox.Text);
 
-        //MUUTA SQL HAUT PARAMETRISIKSI KS. https://csharp-station.com/Tutorial/AdoDotNet/Lesson06
+        }
 
+        //comboboxin sisällön vaihto
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //string pop = "changed";
+            //MessageBox.Show(pop);
+        }
+        //Databaseen yhdistämismetodi, palauttaa connectionin
+            static SqlConnection DatabaseConnect()
+            {
+
+            string connectionString;
+            SqlConnection cnn;
+
+            connectionString = @"Data Source=DESKTOP-FJGGHA7\MSSQLSERVER01;Initial Catalog=JournalDb;Integrated Security=True;";
+
+            cnn= new SqlConnection(connectionString);
+
+            cnn.Open();
+
+                return cnn;
+            }
+        //Organize combobox method
+        private void OrganizeComboBox()
+        {
+            using (SqlConnection conn = DatabaseConnect())
+            {
+                string query = "SELECT week from testitable ORDER BY 'week'";
+                SqlDataAdapter da = new SqlDataAdapter(query, conn);
+
+                DataSet ds = new DataSet();
+                da.Fill(ds, "week");
+                WeekBox.DisplayMember = "week";
+                WeekBox.DataSource = ds.Tables["week"];
+
+                try
+                {
+                    WeekBox.SelectedIndex = WeekBox.FindString(week);
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+            }
+        }
         //Metodi datan hakuun sql:stä
         static string DataGet(string week)
             {
@@ -197,35 +209,24 @@ namespace IleJournal
             cnn.Close();
                 return Output;
             }
-        
-        //metodi comboboxin osoittaman viikon hakuun
-        private void button1_Click_1(object sender, EventArgs e)
+        //Metodi joka tekee timestampin sen mukaan löytyykö viikolle omaa tiedostoa hakemistosta
+        private string TimeStampMethod(string week, string date, string weekday)
         {
-            
-            richTextBox1.Text=DataGet(WeekBox.Text);
+                    //Koosta teksti yhdeksi stringiksi
+            //Heading määräytyy sen mukaan, onko tekstitedostoa olemassa
+            string InitialHeading = "Week number: " + week + "\n \n" + date + " " + weekday + "\n\n" + " ";
+            string DailyHeading = "\n------------------------\n" +date + " " + weekday + "\n\n" + " ";
 
-        }
-
-        //Databaseen yhdistämismetodi, palauttaa connectionin
-            static SqlConnection DatabaseConnect()
+            if (File.Exists(@"C:\Users\ilari\source\repos\IleJournal\Entrys\" + week + ".rtf"))
             {
-
-            string connectionString;
-            SqlConnection cnn;
-
-            connectionString = @"Data Source=DESKTOP-FJGGHA7\MSSQLSERVER01;Initial Catalog=JournalDb;Integrated Security=True;";
-
-            cnn= new SqlConnection(connectionString);
-
-            cnn.Open();
-
-                return cnn;
+                if (richTextBox1.Find(date) == -1)
+                    return DailyHeading;
+                else
+                    return " ";
             }
-        //comboboxin sisällön vaihto
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            //string pop = "changed";
-            //MessageBox.Show(pop);
+            else
+                return InitialHeading;
+
         }
     }
 }//Tsekkaa tää https://www.guru99.com/c-sharp-access-database.html
