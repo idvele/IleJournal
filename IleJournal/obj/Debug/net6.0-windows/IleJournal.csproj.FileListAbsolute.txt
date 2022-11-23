@@ -59,4 +59,4 @@ C:\Users\ilari\source\repos\IleJournal\IleJournal\bin\Debug\net6.0-windows\Syste
 C:\Users\ilari\source\repos\IleJournal\IleJournal\bin\Debug\net6.0-windows\System.Text.Encodings.Web.dll
 C:\Users\ilari\source\repos\IleJournal\IleJournal\bin\Debug\net6.0-windows\System.Text.Json.dll
 C:\Users\ilari\source\repos\IleJournal\IleJournal\bin\Debug\net6.0-windows\runtimes\browser\lib\net6.0\System.Text.Encodings.Web.dll
-C:\Users\ilari\source\repos\IleJournal\IleJournal\obj\Debug\net6.0-windows\IleJournal.SaveObject.resources
+C:\Users\ilari\source\repos\IleJournal\IleJournal\obj\Debug\net6.0-windows\IleJournal.Models.SaveObject.resources

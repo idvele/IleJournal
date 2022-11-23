@@ -1,3 +1,4 @@
+using IleJournal.Models;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Globalization;
