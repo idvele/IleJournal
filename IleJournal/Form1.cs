@@ -45,11 +45,7 @@ namespace IleJournal
 
         }
 
-        //null
-        private void richTextBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
+       
         //Tallennusnappula
         private void button1_Click(object sender, EventArgs e)
         {
