@@ -21,5 +21,6 @@ namespace IleJournal
             // Week 1 is the 1st week of the year with a Thursday in it.
         }
 
+
     }
 }

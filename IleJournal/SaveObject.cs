@@ -1,7 +1,6 @@
 ﻿namespace IleJournal
 {
-    public partial class Journal
-    {
+   
         //Objekti jossa viikko ja tekstit
         public class SaveObject
         {
@@ -10,5 +9,5 @@
 
            
         }
-    }
+    
 }//Tsekkaa tää https://www.guru99.com/c-sharp-access-database.html

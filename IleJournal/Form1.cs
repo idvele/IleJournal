@@ -148,7 +148,7 @@ namespace IleJournal
             string connectionString;
             SqlConnection cnn;
 
-            connectionString = @"Data Source=DESKTOP-FJGGHA7\MSSQLSERVER01;Initial Catalog=JournalDb;Integrated Security=True;";
+            connectionString = @"Data Source=DESKTOP-FJGGHA7\MSSQLSERVER01;Initial Catalog=JournalDb;Integrated Security=True; Encrypt=False;";
 
             cnn= new SqlConnection(connectionString);
 
@@ -230,3 +230,5 @@ namespace IleJournal
         }
     }
 }//Tsekkaa t‰‰ https://www.guru99.com/c-sharp-access-database.html
+
+// orm entity framework, xml.cs, xml serializer
