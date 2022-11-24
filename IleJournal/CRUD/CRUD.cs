@@ -19,12 +19,20 @@ namespace IleJournal.CRUD
                 //kyllä= päivitä olemassaoleva rivi
         }
 
-        public static void ReadAll()
+        public static IList<string> ReadAll()
         {
             using SaveObjectContext context = new SaveObjectContext();
             var entrys = from SaveObject in context.SaveObjects
                          orderby SaveObject.Week
                          select SaveObject;
+            
+            IList<string> WeekList = new List<string>();
+            foreach (SaveObject item in entrys)
+            {
+                WeekList.Add(item.Week);
+            }
+
+            return WeekList;
 
         }
         public static string ReadOne(string week)

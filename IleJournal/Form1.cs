@@ -162,28 +162,32 @@ namespace IleJournal
         //Organize combobox method
         private void OrganizeComboBox()
         {
-            using (SqlConnection conn = DatabaseConnect())
+            //using (SqlConnection conn = DatabaseConnect())
+            //{
+            //    string query = "SELECT week from testitable ORDER BY 'week'";
+            //    SqlDataAdapter da = new SqlDataAdapter(query, conn);
+
+            //    DataSet ds = new DataSet();
+            //    da.Fill(ds, "week");
+            //    WeekBox.DisplayMember = "week";
+            //    WeekBox.DataSource = ds.Tables["week"];
+
+            WeekBox.DataSource = CRUD.CRUD.ReadAll();
+            //Mik‰li viikolle Databasekirjaus, nostetaan viikon jnumero p‰‰limm‰iseksi
+            try
             {
-                string query = "SELECT week from testitable ORDER BY 'week'";
-                SqlDataAdapter da = new SqlDataAdapter(query, conn);
+                WeekBox.SelectedIndex = WeekBox.FindString(week);
+            }
+            catch (Exception)
+            {
 
-                DataSet ds = new DataSet();
-                da.Fill(ds, "week");
-                WeekBox.DisplayMember = "week";
-                WeekBox.DataSource = ds.Tables["week"];
-
-                try
-                {
-                    WeekBox.SelectedIndex = WeekBox.FindString(week);
-                }
-                catch (Exception)
-                {
-
-                    throw;
-                }
+                throw;
             }
         }
-        //Metodi datan hakuun sql:st‰
+
+
+    
+        //Metodi datan hakuun sql:st‰: obsolete
         static string DataGet(string week)
             {
 
