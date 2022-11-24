@@ -138,12 +138,7 @@ namespace IleJournal
 
         }
 
-        //comboboxin sisällön vaihto
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            //string pop = "changed";
-            //MessageBox.Show(pop);
-        }
+     
         //Databaseen yhdistämismetodi, palauttaa connectionin
             static SqlConnection DatabaseConnect()
             {
@@ -162,16 +157,7 @@ namespace IleJournal
         //Organize combobox method
         private void OrganizeComboBox()
         {
-            //using (SqlConnection conn = DatabaseConnect())
-            //{
-            //    string query = "SELECT week from testitable ORDER BY 'week'";
-            //    SqlDataAdapter da = new SqlDataAdapter(query, conn);
-
-            //    DataSet ds = new DataSet();
-            //    da.Fill(ds, "week");
-            //    WeekBox.DisplayMember = "week";
-            //    WeekBox.DataSource = ds.Tables["week"];
-
+           
             WeekBox.DataSource = CRUD.CRUD.ReadAll();
             //Mikäli viikolle Databasekirjaus, nostetaan viikon jnumero päälimmäiseksi
             try
