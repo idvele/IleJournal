@@ -14,7 +14,7 @@ namespace IleJournal
     {
         //p‰iv‰m‰‰r‰ m‰‰ritet‰n k‰ynnistyksen yhteydess‰
             //Get dates
-            string week = JournalHelpers.Weekmethod(DateTime.Now).ToString();
+            string week = JournalHelpers.Weekmethod(DateTime.Now.AddDays(14)).ToString();
             string date = DateTime.Today.ToShortDateString();
             string weekday = DateTime.Today.DayOfWeek.ToString();
 
@@ -42,8 +42,7 @@ namespace IleJournal
 
             OrganizeComboBox();
 
-            //    WeekBox.Items.Add("yksi");
-            //WeekBox.Items.Add("kaksi");
+           
 
         }
 
@@ -64,8 +63,9 @@ namespace IleJournal
             save.Week = week;
 
             }
-            save.Journal_text = richTextBox1.Text.ToString();
             //tallennusviikoksi m‰‰ritet‰‰n comboboxin valittu viikko JOS siell‰ on viikko valittuna
+            save.Journal_text = richTextBox1.Text.ToString();
+            //Journal Tekstiksi richtextboxin teksti
 
             //text save-------------------------------
 
@@ -82,52 +82,8 @@ namespace IleJournal
 
             // Save to Sql
 
-            //CRUD.CRUD.Insert();
-            SqlConnection cnn = DatabaseConnect();
-            SqlDataAdapter adapter = new SqlDataAdapter();
-
-            //Parametriset SQL-komennot
-            //if-logiikka, jos viikkomerkint‰ on->p‰ivitys jos ei->uusi input
-            string CheckSql = "Select * from testitable where Week= '"+save.Week+"'";
-            SqlCommand CheckCommand = new SqlCommand(CheckSql, cnn);
-            SqlDataReader r = CheckCommand.ExecuteReader();
-            string value="a";
-            while (r.Read())
-            {
-                value = r.GetString(0);
-            }
-            r.Close();
-            CheckCommand.Dispose();
-
-            string message = "null";
-            if (value=="a")
-                //luodaan uusi kirjaus
-            {
-            
-            string InsertSql = ("Insert into dbo.testitable (Week,Journal_text) values('" + save.Week + "','" + save.Journal_text + "')");
-            
-            //SqlCommand command = new SqlCommand(InsertSql, cnn);
-
-            adapter.InsertCommand = new SqlCommand(InsertSql, cnn);
-            adapter.InsertCommand.ExecuteNonQuery();
-
-            //command.Dispose();
-
-
-             message = "Saved!";
-            }
-            else
-            {
-                //p‰ivitet‰‰n olemassaoleva kirjaus
-                SqlCommand command = new SqlCommand("UPDATE testitable SET Journal_text = '"+save.Journal_text+"' WHERE Week='"+save.Week+"';", cnn);
-                adapter.UpdateCommand = command;
-                adapter.UpdateCommand.ExecuteNonQuery();
-
-              message = "Save updated";
-            }
-            
-            cnn.Close();
-            MessageBox.Show(message);   
+            CRUD.CRUD.Insert(save);
+               
         }
        
         //metodi comboboxin osoittaman viikon hakuun
