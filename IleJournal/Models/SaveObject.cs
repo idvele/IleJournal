@@ -4,6 +4,7 @@
     //Objekti jossa viikko ja tekstit
     public class SaveObject
     {
+        public Guid Id { get; set; }
         public string? Week { get; set; }
         public string? Journal_text { get; set; }
 

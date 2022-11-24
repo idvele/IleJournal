@@ -5,6 +5,8 @@ using System.Globalization;
 using System.IO;
 using System.Net.Security;
 using System.Windows.Forms;
+using IleJournal.CRUD;
+
 
 namespace IleJournal
 {
@@ -51,7 +53,8 @@ namespace IleJournal
         {
             //make a saveable object
             SaveObject save = new SaveObject();
-            //tallennusviikoksi m‰‰ritet‰‰n comboboxin valittu viikko JOS siell‰ on viikko valittuna
+            save.Id=Guid.NewGuid();
+            //Luodaan saveobjectille GUID
             if (WeekBox.Text!= "")
             {
                 save.Week = WeekBox.Text;
@@ -62,6 +65,7 @@ namespace IleJournal
 
             }
             save.Journal_text = richTextBox1.Text.ToString();
+            //tallennusviikoksi m‰‰ritet‰‰n comboboxin valittu viikko JOS siell‰ on viikko valittuna
 
             //text save-------------------------------
 
@@ -77,6 +81,8 @@ namespace IleJournal
 
 
             // Save to Sql
+
+            //CRUD.CRUD.Insert();
             SqlConnection cnn = DatabaseConnect();
             SqlDataAdapter adapter = new SqlDataAdapter();
 
@@ -128,7 +134,7 @@ namespace IleJournal
         private void button1_Click_1(object sender, EventArgs e)
         {
             
-            richTextBox1.Text=DataGet(WeekBox.Text);
+            richTextBox1.Text=CRUD.CRUD.ReadOne(WeekBox.Text);
 
         }
 
