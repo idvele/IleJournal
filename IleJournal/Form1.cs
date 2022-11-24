@@ -14,7 +14,7 @@ namespace IleJournal
     {
         //p‰iv‰m‰‰r‰ m‰‰ritet‰n k‰ynnistyksen yhteydess‰
             //Get dates
-            string week = JournalHelpers.Weekmethod(DateTime.Now.AddDays(14)).ToString();
+            string week = JournalHelpers.Weekmethod(DateTime.Now).ToString();
             string date = DateTime.Today.ToShortDateString();
             string weekday = DateTime.Today.DayOfWeek.ToString();
 
@@ -27,6 +27,7 @@ namespace IleJournal
         //Mit‰ tapahtuu aloituksessa
         private void Form1_Load(object sender, EventArgs e)
         {
+            //t‰h‰n XML-deserialisointi
             //get old data if the weekly file exists
             if (File.Exists(@"C:\Users\ilari\source\repos\IleJournal\Entrys\" + week + ".rtf"))
                 richTextBox1.LoadFile(@"C:\Users\ilari\source\repos\IleJournal\Entrys\" + week + ".rtf");
@@ -52,6 +53,7 @@ namespace IleJournal
         {
             //make a saveable object
             SaveObject save = new SaveObject();
+            
             save.Id=Guid.NewGuid();
             //Luodaan saveobjectille GUID
             if (WeekBox.Text!= "")
@@ -69,6 +71,9 @@ namespace IleJournal
 
             //text save-------------------------------
 
+            //T‰h‰n XML-serialisointi
+
+            XMLMethods.XMLMethods.XMLSerialize(save);
             //make a path for weeknumber
             string fileName = save.Week;
             string fullPath = @"C:\Users\ilari\source\repos\IleJournal\Entrys\" + fileName +".rtf";
@@ -95,7 +100,7 @@ namespace IleJournal
         }
 
      
-        //Databaseen yhdist‰mismetodi, palauttaa connectionin
+        //Databaseen yhdist‰mismetodi, palauttaa connectionin: obsolete
             static SqlConnection DatabaseConnect()
             {
 
