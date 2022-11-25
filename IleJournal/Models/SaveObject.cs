@@ -1,7 +1,10 @@
-﻿namespace IleJournal.Models
+﻿using System.Xml.Serialization;
+
+namespace IleJournal.Models
 {
 
     //Objekti jossa viikko ja tekstit
+    [XmlRoot("Oppimispäiväkirja")]
     public class SaveObject
     {
         public Guid Id { get; set; }

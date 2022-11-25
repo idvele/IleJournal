@@ -14,7 +14,7 @@ namespace IleJournal
     {
         //p‰iv‰m‰‰r‰ m‰‰ritet‰n k‰ynnistyksen yhteydess‰
             //Get dates
-            string week = JournalHelpers.Weekmethod(DateTime.Now).ToString();
+            string week = JournalHelpers.Weekmethod(DateTime.Now.AddDays(7)).ToString();
             string date = DateTime.Today.ToShortDateString();
             string weekday = DateTime.Today.DayOfWeek.ToString();
 
@@ -29,8 +29,10 @@ namespace IleJournal
         {
             //t‰h‰n XML-deserialisointi
             //get old data if the weekly file exists
-            if (File.Exists(@"C:\Users\ilari\source\repos\IleJournal\Entrys\" + week + ".rtf"))
-                richTextBox1.LoadFile(@"C:\Users\ilari\source\repos\IleJournal\Entrys\" + week + ".rtf");
+            //if (File.Exists(@"C:\Users\ilari\source\repos\IleJournal\Entrys\" + week + ".rtf"))
+            //    richTextBox1.LoadFile(@"C:\Users\ilari\source\repos\IleJournal\Entrys\" + week + ".rtf");
+            if (File.Exists(@"C:\Users\ilari\source\repos\IleJournal\Entrys\" + week + ".xml"))
+            richTextBox1.Text = XMLMethods.XMLMethods.XMLDeSerialize(week).Journal_text;
 
             //write timestamp and concatinate if stamp doesn¥t exist
             string stamp = TimeStampMethod(week, date, weekday);
@@ -74,13 +76,13 @@ namespace IleJournal
             //T‰h‰n XML-serialisointi
 
             XMLMethods.XMLMethods.XMLSerialize(save);
-            //make a path for weeknumber
-            string fileName = save.Week;
-            string fullPath = @"C:\Users\ilari\source\repos\IleJournal\Entrys\" + fileName +".rtf";
+            ////make a path for weeknumber
+            //string fileName = save.Week;
+            //string fullPath = @"C:\Users\ilari\source\repos\IleJournal\Entrys\" + fileName +".rtf";
 
 
-            //save for current weeknumber
-            richTextBox1.SaveFile(fullPath, RichTextBoxStreamType.RichText);
+            ////save for current weeknumber
+            //richTextBox1.SaveFile(fullPath, RichTextBoxStreamType.RichText);
 
             //Sql save------------------------------
 

@@ -14,16 +14,20 @@ namespace IleJournal.XMLMethods
         public static void XMLSerialize(SaveObject save)
         {
             var xmlSerializer = new XmlSerializer(typeof(SaveObject));
-            using (var writer = new StreamWriter(@"C:\Users\ilari\source\repos\IleJournal\Entrys\xmlfilu.xml"))
+            using (var writer = new StreamWriter(@"C:\Users\ilari\source\repos\IleJournal\Entrys\"+save.Week+".xml"))
             {
                 xmlSerializer.Serialize(writer, save);
             };
             
         }
 
-        public static SaveObject XMLDeSerialize()
+        public static SaveObject XMLDeSerialize(string week)
         {
-            return new SaveObject();
+            var xmlSerializer = new XmlSerializer(typeof(SaveObject));
+            using var myFileStream = new FileStream(@"C:\Users\ilari\source\repos\IleJournal\Entrys\" + week + ".xml", FileMode.Open);
+            var oldObject = (SaveObject)xmlSerializer.Deserialize(myFileStream);
+            
+            return oldObject;
         }
 
     }
