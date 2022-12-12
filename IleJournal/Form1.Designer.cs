@@ -41,7 +41,7 @@
             this.richTextBox1.Size = new System.Drawing.Size(523, 426);
             this.richTextBox1.TabIndex = 0;
             this.richTextBox1.Text = "";
-            this.richTextBox1.TextChanged += new System.EventHandler(this.richTextBox1_TextChanged);
+         
             // 
             // Save
             // 
@@ -60,7 +60,6 @@
             this.WeekBox.Name = "WeekBox";
             this.WeekBox.Size = new System.Drawing.Size(121, 23);
             this.WeekBox.TabIndex = 2;
-            this.WeekBox.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
             // button1
             // 
